@@ -1,5 +1,4 @@
-import { createInterface } from "node:readline/promises";
-import { getCommands } from "./command.js";
+import { initState } from "./state.js";
 
 export function cleanInput(input: string): string[] {
   const lower = input.toLowerCase();
@@ -12,24 +11,19 @@ export function cleanInput(input: string): string[] {
 }
 
 export function startREPL() {
-  const rl = createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    prompt: "> ",
-  });
-  const cmds = getCommands();
-  rl.prompt();
-  rl.on("line", (input) => {
+  const state = initState();
+  state.rl.prompt();
+  state.rl.on("line", (input) => {
     const clean = cleanInput(input);
     if (clean.length == 0) {
-      rl.prompt();
+      state.rl.prompt();
       return;
     }
-    if (clean[0] in cmds) {
-      cmds[clean[0]].callback(cmds);
+    if (clean[0] in state.cmds) {
+      state.cmds[clean[0]].callback(state);
     } else {
       console.log("Unknown command");
     }
-    rl.prompt();
+    state.rl.prompt();
   });
 }
