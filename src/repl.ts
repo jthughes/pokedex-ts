@@ -10,17 +10,21 @@ export function cleanInput(input: string): string[] {
   return result;
 }
 
-export function startREPL() {
+export async function startREPL() {
   const state = initState();
   state.rl.prompt();
-  state.rl.on("line", (input) => {
+  state.rl.on("line", async (input) => {
     const clean = cleanInput(input);
     if (clean.length == 0) {
       state.rl.prompt();
       return;
     }
     if (clean[0] in state.cmds) {
-      state.cmds[clean[0]].callback(state);
+      try {
+        await state.cmds[clean[0]].callback(state);
+      } catch (err) {
+        console.log(`Network error: ${err}`);
+      }
     } else {
       console.log("Unknown command");
     }
