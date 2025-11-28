@@ -1,4 +1,4 @@
-import { initState } from "./state.js";
+import { State } from "./state.js";
 
 export function cleanInput(input: string): string[] {
   const lower = input.toLowerCase();
@@ -10,8 +10,7 @@ export function cleanInput(input: string): string[] {
   return result;
 }
 
-export async function startREPL() {
-  const state = initState();
+export async function startREPL(state: State) {
   state.rl.prompt();
   state.rl.on("line", async (input) => {
     const clean = cleanInput(input);
@@ -23,7 +22,7 @@ export async function startREPL() {
       try {
         await state.cmds[clean[0]].callback(state);
       } catch (err) {
-        console.log(`Network error: ${err}`);
+        console.log(`${err}`);
       }
     } else {
       console.log("Unknown command");

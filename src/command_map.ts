@@ -10,6 +10,9 @@ export async function commandMap(state: State) {
 }
 
 export async function commandMapb(state: State) {
+  if (!state.prevLocationsURL) {
+    throw new Error("already on first page");
+  }
   const locations = await state.pokeapi.fetchLocations(state.prevLocationsURL);
   for (const area of Object.values(locations.results)) {
     console.log(area.name);
