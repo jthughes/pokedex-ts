@@ -20,7 +20,7 @@ export async function startREPL(state: State) {
     }
     if (clean[0] in state.cmds) {
       try {
-        await state.cmds[clean[0]].callback(state);
+        await state.cmds[clean[0]].callback(state, ...clean.slice(1));
       } catch (err) {
         console.log(`${err}`);
       }
